@@ -41,7 +41,7 @@ data_type(6).name = 'RHK_DATA_SEQUENTIAL';
 %
 % /* Only in RHKPageIndex */
 %% object type
-object_type(1).code = 0:20; %%%%%%%-------DK-----was given mistakes
+object_type(1).code = 0:20; %%%%%%%-------DK-----was generating a problem
 %object_type(1).code(19) =  -42;   % file header code
 %object_type(1).code(20) =  -43;   % file header code
 
@@ -118,7 +118,7 @@ line_type(2).name = 'RHK_LINE_HISTOGRAM';       % = 1,
 line_type(3).name = 'RHK_LINE_CROSS_SECTION';   % = 2,
 line_type(4).name = 'RHK_LINE_LINE_TEST';       % = 3,
 line_type(5).name = 'RHK_LINE_OSCILLOSCOPE';    % = 4,
-line_type(6).name = 'RHK_LINE_NOISE_POWER_SPECTRUM';    % = 6, %%%%%%%%% -------------Mistake here!!!!!! //DK------------------------
+line_type(6).name = 'RHK_LINE_NOISE_POWER_SPECTRUM';    % = 6, %%%%%%%%% -------------Problem here!!!!!! //DK------------------------
 line_type(7).name = 'RHK_LINE_IV_SPECTRUM';             % = 7,
 line_type(8).name = 'RHK_LINE_IZ_SPECTRUM';             % = 8,
 line_type(9).name = 'RHK_LINE_IMAGE_X_AVERAGE';         % = 9,
@@ -203,7 +203,7 @@ for j = 1:page_index_header.page_count
     page_header(j) = read_page_header(); % read the page header with the function defined later in this file
     
     % after the page_header there is another object list (8 objects)
-    %fseek(fid,4,0); % skip 4 bytes (unexplainable, yet) %%%%%%%%% -------------Mistake was here!!!!!! //DK------------------------
+    %fseek(fid,4,0); % skip 4 bytes (unexplainable, yet) %%%%%%%%% -------------Problem was here!!!!!! //DK------------------------
     isSpectroscopy = 0;
     for i=1:page_header(j).olc%9
         object_list_string(j,i) = read_objects();
@@ -376,9 +376,9 @@ fclose(fid); % close the file
         out.color_info_count = fread(fid,1,'int32');    % 4 bytes
         out.grid_x_size = fread(fid,1,'int32');         % 4 bytes
         out.grid_y_size = fread(fid,1,'int32');         % 4 bytes
-        out.olc = fread(fid,1,'int32'); % 4 bytes                                            %%%%%%%%% -------------Mistake was here!!!!!! //DK------------------------
+        out.olc = fread(fid,1,'int32'); % 4 bytes                                            %%%%%%%%% -------------Problem was here!!!!!! //DK------------------------
         out.flags = fread(fid,1,'int32'); % 4 bytes
-        out.reserved = fread(fid,15,'uint32');          %%%%%%%%% -------------Mistake was here!!!!!! //DK------------------------
+        out.reserved = fread(fid,15,'uint32');          %%%%%%%%% -------------Problem was here!!!!!! //DK------------------------
     end
 %% Function: read string data
 %
@@ -437,13 +437,13 @@ fclose(fid); % close the file
 %%%%%%%%%%%
     function out=read_data();
         for j=1:page_index_header.page_count
-            fseek(fid,page_index_array(j,2).offset-1+1,'bof');                                %%%%%%%%% -------------Mistake was here!!!!!! //DK------------------------
+            fseek(fid,page_index_array(j,2).offset-1+1,'bof');                                %%%%%%%%% -------------Problem was here!!!!!! //DK------------------------
             aux = fread(fid,page_header(j).page_data_size/4,'int32','l');
             % /4 is because the total data size has to be divided
             % by the numer of bytes that use each 'long' data
             
             % change to physical units the measured data
-            aux2 = page_header(j).z_offset+double(aux)*page_header(j).z_scale;%/256;                    %%%%%%%%% -------------Mistake was here!!!!!! //DK------------------------
+            aux2 = page_header(j).z_offset+double(aux)*page_header(j).z_scale;%/256;                    %%%%%%%%% -------------Problem was here!!!!!! //DK------------------------
             % for some unkwon reason, to get the right scale I have to
             % dived by 256.
             %
